@@ -1,0 +1,16 @@
+{
+  "name": "Anarchy Engine v3.0",
+  "short_name": "Anarchy",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#00bfff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1042/1042340.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

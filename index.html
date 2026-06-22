@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANARCHY - Personal Dashboard v3.0</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <link rel="manifest" href="manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
+</head>
+<body>
+
+    <div id="home-page" class="page-container active">
+        <div class="punk-bg-text text-1">Lemahh!!</div>
+        <div class="punk-bg-text text-2">Bismillah.</div>
+        <div class="punk-bg-text text-3">Minimal jalan</div>
+        <div class="punk-bg-text text-4">Mikir blokk!!!</div>
+        <div class="punk-bg-text text-5">Mau sampee kapann??</div>
+        <div class="punk-bg-text text-6">Sadar bego</div>
+        <div class="punk-bg-text text-7">BULLSHiTT</div>
+        <div class="punk-bg-text text-8">Inget umur!!</div>
+        <div class="punk-bg-text text-9">Tujuan??</div>
+        <div class="punk-bg-text text-10">Bego jangan dihabisin</div>
+        <div class="punk-bg-text text-11">Ngejar mimpi pake mimpi</div>
+        <div class="punk-bg-text text-12">cumaa mimpit!!</div>
+        <div class="punk-bg-text text-13">sendirii</div>
+
+        <div class="gateway-wrapper">
+            <header class="gateway-header">
+                <div class="skull-logo">☠️</div>
+                <h1>ANARCHY ENGINE</h1>
+                <p>Welcome back, Maverick. Pick your grind today.</p>
+            </header>
+            
+            <div class="gateway-menu">
+                <button class="gate-btn btn-habit" onclick="switchPage('habit-page')">
+                    <span class="btn-icon">⚔️</span>
+                    <div class="btn-label">
+                        <h3>ADVENTURE ROUTE</h3>
+                        <p>Track your daily habits & leveling up RPG stats</p>
+                    </div>
+                </button>
+                <button class="gate-btn btn-finance" onclick="switchPage('finance-page')">
+                    <span class="btn-icon">💰</span>
+                    <div class="btn-label">
+                        <h3>BLACK MARKET</h3>
+                        <p>Manage your wallet, trading logs & finance status</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="habit-page" class="page-container">
+        <div class="inner-dashboard-container">
+            <header class="tracker-header">
+                <div class="brand">
+                    <button class="back-home-btn" onclick="switchPage('home-page')">↩ BACK TO CORE</button>
+                    <h1>HABITS <span class="rpg-edition-badge">ANARCHY v3.0</span></h1>
+                    <div class="archive-selector">
+                        <select id="month-select" class="rpg-select"></select>
+                        <span id="current-year-display" class="year-tag">2026</span>
+                    </div>
+                    
+                    <div class="rpg-status-container">
+                        <div class="status-top">
+                            <div class="level-badge">LVL <span id="rpg-level">1</span> <span id="max-lvl-tag" style="display:none; color:#ff3e3e;">[MAX]</span></div>
+                            <div class="xp-bar-wrapper">
+                                <div id="rpg-xp-bar" class="xp-bar-fill"></div>
+                                <span id="rpg-xp-text" class="xp-text">0 / 100 XP</span>
+                            </div>
+                        </div>
+                        <div id="daily-report" class="daily-report-text">📅 Loading report...</div>
+                    </div>
+                </div>
+                
+                <div class="main-chart-wrapper">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </header>
+
+            <div class="main-layout">
+                <aside class="habit-manager-panel">
+                    <h3>⚡ CORE TARGETS</h3>
+                    <div class="add-habit-form">
+                        <input type="text" id="new-habit-input" placeholder="New quest name...">
+                        <button id="add-habit-btn">ADD</button>
+                    </div>
+                    <ul id="manager-habit-list"></ul>
+                </aside>
+
+                <main class="matrix-wrapper">
+                    <table class="habit-table">
+                        <thead>
+                            <tr id="table-header-row">
+                                <th class="sticky-col habit-title-th">My Quests</th>
+                                <th class="total-th">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="habit-rows-container"></tbody>
+                    </table>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div id="finance-page" class="page-container">
+        <div class="inner-dashboard-container">
+            <header class="tracker-header">
+                <div class="brand">
+                    <button class="back-home-btn" onclick="switchPage('home-page')">↩ BACK TO CORE</button>
+                    <h1>MERCHANT <span class="rpg-edition-badge text-gold">CASHFLOW</span></h1>
+                    <p class="sub-brand">Track your trading capital & cash logistics</p>
+                </div>
+                <div class="balance-card">
+                    <div class="bal-label">TOTAL NET WORTH</div>
+                    <div id="total-balance-display" class="bal-amount">Rp 0</div>
+                </div>
+            </header>
+
+            <div class="finance-layout">
+                <aside class="finance-form-panel">
+                    <h3>💸 LOG TRANSACTION</h3>
+                    <div class="form-group">
+                        <label>Transaction Type</label>
+                        <div class="type-selector-wrapper">
+                            <button id="type-income-btn" class="type-btn active" onclick="setFinanceType('INCOME')">PROFIT / INCOME</button>
+                            <button id="type-expense-btn" class="type-btn" onclick="setFinanceType('EXPENSE')">LOSS / EXPENSE</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="fin-desc-input" placeholder="e.g., Profit XAUUSD / Oli Cafe Racer">
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (Rupiah)</label>
+                        <input type="number" id="fin-amount-input" placeholder="Nominal tanpa titik (contoh: 50000)">
+                    </div>
+                    <button id="add-finance-btn" onclick="addTransaction()">INJECT TRANSACTION</button>
+                </aside>
+
+                <main class="finance-history-wrapper">
+                    <h3>📜 TRANSACTION LOGS</h3>
+                    <div class="table-scroll-wrapper">
+                        <table class="finance-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="finance-logs-container">
+                                </tbody>
+                        </table>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div id="notes-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h3 id="modal-title">Adventure Log</h3>
+            <textarea id="modal-text" placeholder="Write your notes today..."></textarea>
+            <button id="save-note-btn">SAVE TO LOG</button>
+        </div>
+    </div>
+
+<!-- Gunakan App dan Firestore versi CDN Kompatibel yang Lebih Stabil -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
