@@ -266,58 +266,92 @@ body {
     100% { transform: scale(1); text-shadow: 0 0 0px rgba(255,255,255,0); }
 }
 
-/* ==========================================
-   RESPONSIVE MOBILE ENGINE (UNTUK HP)
-   ========================================== */
-@media screen and (max-width: 600px) {
-    /* 1. Atur container utama biar gak kesempitan */
-    body {
-        padding: 10px;
-        font-size: 14px;
-    }
-
+/* =======================================================
+   ANARCHY ENGINE RESPONSIVE CORE (PERBAIKAN TOTAL LAYAR HP)
+   ======================================================= */
+@media screen and (max-width: 768px) {
+    /* 1. Jinakkan Lebar Halaman & Container Utama */
     .page-container {
-        padding: 15px;
-        margin-bottom: 70px; /* Biar gak ketutup menu bawah */
+        width: 100% !important;
+        max-width: 100vw !important;
+        padding: 10px !important;
+        box-sizing: border-box !important;
     }
 
-    /* 2. Ubah susunan menu navigasi jadi di bawah (Nav Bar ala APK Android) */
-    .navigation-menu {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: space-around;
-        background: #161b22;
-        padding: 12px 5px;
-        border-top: 2px solid #00bfff;
-        z-index: 999;
+    .inner-dashboard-container {
+        margin: 5px auto !important;
+        padding: 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    .navigation-menu button {
-        width: 100%;
-        margin: 0 4px;
-        padding: 10px 5px;
-        font-size: 12px;
-        white-space: nowrap;
+    /* 2. Header Tracker (Ubah flex kesamping jadi vertikal ke bawah) */
+    .tracker-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
     }
 
-    /* 3. Atur tabel habit biar bisa digeser (Scrollable) dan gak kepotong */
-    .table-responsive {
-        display: block;
-        width: 100%;
-        overflow-x: auto;
+    .brand, .balance-card, .main-chart-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        text-align: left !important;
+    }
+
+    /* Batasi tinggi chart di HP biar gak makan tempat */
+    .main-chart-wrapper {
+        height: 180px !important;
+        max-width: 100% !important;
+    }
+
+    /* 3. Bongkar Grid Sistem (Ubah Jadi Satu Kolom Vertikal) */
+    .main-layout, .finance-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important; /* Matikan grid laptop */
+        gap: 15px !important;
+        width: 100% !important;
+    }
+
+    .habit-manager-panel, .matrix-wrapper,
+    .finance-form-panel, .finance-history-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 4. TEMBAK LANGSUNG CLASS BAWAAN LU BIAR BISA DIGESER */
+    .matrix-wrapper, .table-scroll-wrapper {
+        width: 100% !important;
+        overflow-x: auto !important; /* Aktifkan geser kanan-kiri khusus area tabel */
+        display: block !important;
         -webkit-overflow-scrolling: touch;
+        border: 2px dashed var(--punk-red) !important; /* Border pengaman cyber-punk */
     }
 
-    table {
-        min-width: 500px; /* Memaksa tabel punya ruang buat kotak centang */
+    .habit-table, .finance-table {
+        min-width: 650px !important; /* Paksa tabel tetap lebar di dalam scrollbar */
     }
 
-    /* 4. Sesuaikan ukuran grid dashboard (jika ada) */
-    .dashboard-grid {
-        grid-template-columns: 1fr; /* Jadi 1 baris vertikal ke bawah */
-        gap: 15px;
+    /* 5. Menu Utama Gateway (Beranda Core) */
+    .gateway-wrapper {
+        width: 95% !important;
+        padding: 20px !important;
+        box-shadow: 6px 6px 0px #000 !important;
     }
+
+    .gateway-header h1 {
+        font-size: 28px !important;
+    }
+
+    .gateway-menu {
+        flex-direction: column !important;
+    }
+
+    /* Perkecil teks wallpaper abstrak biar gak numpuk merusak mata di HP */
+    .punk-bg-text {
+        font-size: 20px !important;
+        opacity: 0.02 !important;
+    }
+    .text-7 { font-size: 40px !important; }
 }
