@@ -265,3 +265,59 @@ body {
     50% { transform: scale(1.05); text-shadow: 0 0 15px rgba(255,255,255,0.4); }
     100% { transform: scale(1); text-shadow: 0 0 0px rgba(255,255,255,0); }
 }
+
+/* ==========================================
+   RESPONSIVE MOBILE ENGINE (UNTUK HP)
+   ========================================== */
+@media screen and (max-width: 600px) {
+    /* 1. Atur container utama biar gak kesempitan */
+    body {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .page-container {
+        padding: 15px;
+        margin-bottom: 70px; /* Biar gak ketutup menu bawah */
+    }
+
+    /* 2. Ubah susunan menu navigasi jadi di bawah (Nav Bar ala APK Android) */
+    .navigation-menu {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-around;
+        background: #161b22;
+        padding: 12px 5px;
+        border-top: 2px solid #00bfff;
+        z-index: 999;
+    }
+
+    .navigation-menu button {
+        width: 100%;
+        margin: 0 4px;
+        padding: 10px 5px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    /* 3. Atur tabel habit biar bisa digeser (Scrollable) dan gak kepotong */
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        min-width: 500px; /* Memaksa tabel punya ruang buat kotak centang */
+    }
+
+    /* 4. Sesuaikan ukuran grid dashboard (jika ada) */
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Jadi 1 baris vertikal ke bawah */
+        gap: 15px;
+    }
+}
