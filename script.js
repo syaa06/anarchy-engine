@@ -74,14 +74,15 @@ function saveDB() {
         });
 }
 
-// RUN ENGINE UTAMA (DIGABUNG JADI SATU AGAR TIDAK SALING TIMPA)
+// RUN ENGINE UTAMA (PERBAIKAN ERROR DOC.EXISTS)
 window.onload = function() {
     // 1. Aktifkan event listener modal bawaan
     setupModalEvents();
     
     // 2. Konek ke database Cloud Firestore secara Realtime Listener
     docRef.onSnapshot((doc) => {
-        if (doc.exists()) {
+        // FIX: Cek properti exists tanpa menggunakan tanda kurung ()
+        if (doc.exists) { 
             db = doc.data();
             console.log("⚡ Data Cloud Berhasil Dimuat!");
             
