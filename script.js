@@ -9,14 +9,14 @@ const MAX_LEVEL = 50;
 // ==========================================
 // KONEKSI REALTIME DATABASE FIREBASE CLOUD
 // ==========================================
- const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyDTH_sjqItg-AOJUPL_vLsEB0yMbRCC6zs",
     authDomain: "anarchy-engine.firebaseapp.com",
     projectId: "anarchy-engine",
     storageBucket: "anarchy-engine.firebasestorage.app",
     messagingSenderId: "758632939258",
     appId: "1:758632939258:web:ccd1c591346d07b8145343"
-  };
+};
 
 // Inisialisasi Firebase
 if (!firebase.apps.length) {
@@ -57,28 +57,31 @@ function getArchiveKey() {
     return `${db.currentYear}-${activeMonthName}`;
 }
 
-// FUNGSI UPGRADE: Kirim data langsung ke server Cloud
+// FIX LOGIKA SAVE: Gabungkan Cloud Firestore dan Cadangan LocalStorage
 function saveDB() {
+    // 1. Kirim ke Firebase Cloud
     docRef.set(db)
         .then(() => console.log("🔥 Cloud database berhasil disinkronkan!"))
         .catch((error) => console.error("❌ Gagal sync cloud: ", error));
+        
+    // 2. Simpan cadangan lokal di HP/Laptop buat jaga-jaga offline
+    localStorage.setItem('anarchyDashboardEngine', JSON.stringify(db));
 }
 
-// RUN ENGINE UTAMA: Berjalan otomatis saat halaman pertama kali dimuat
+// RUN ENGINE UTAMA (DIGABUNG JADI SATU AGAR TIDAK SALING TIMPA)
 window.onload = function() {
-    // 1. Aktifkan event listener bawaan modal/tombol dasar lu jika ada
-    if (typeof setupModalEvents === 'function') setupModalEvents();
+    // 1. Aktifkan event listener modal bawaan
+    setupModalEvents();
     
-    // 2. Konek ke database Cloud secara Realtime
+    // 2. Konek ke database Cloud Firestore secara Realtime Listener
     docRef.onSnapshot((doc) => {
         if (doc.exists()) {
             db = doc.data();
             console.log("⚡ Data Cloud Berhasil Dimuat!");
             
-            // PAKSA RENDER: Langsung gambar habit tracker & grafik saat pertama kali data masuk
+            // Render ulang komponen visual sesuai data cloud terbaru
             if (typeof initHabitDashboard === 'function') initHabitDashboard();
             if (typeof initChart === 'function') {
-                // Beri jeda micro-second agar element Canvas HTML siap digambar
                 setTimeout(() => {
                     if (!trendChart) initChart();
                     else updateChartData();
@@ -87,7 +90,7 @@ window.onload = function() {
             if (typeof renderFinanceDashboard === 'function') renderFinanceDashboard();
 
         } else {
-            // Jika database cloud baru pertama kali dibuat dan masih kosong, isi pake template default
+            // Jika database cloud baru pertama kali dibuat, isi pake template default
             saveDB();
         }
     });
@@ -97,12 +100,9 @@ window.onload = function() {
 // NAVIGATION CONTROLLER (PAGES ROUTING)
 // ==========================================
 window.switchPage = function(pageId) {
-    // Sembunyikan semua halaman
     document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
-    // Munculkan halaman target
     document.getElementById(pageId).classList.add('active');
 
-    // Inisialisasi komponen secara dinamis sesuai halaman yang dibuka
     if (pageId === 'habit-page') {
         initHabitDashboard();
         setTimeout(() => {
@@ -217,6 +217,7 @@ function buildTrackerTable() {
         th.innerText = d;
         th.style.cursor = 'pointer';
         if (currentArchive && currentArchive[`note_day_${d}`]) th.classList.add('has-note');
+        // Mobile Friendly Event: click biasa juga dipasang untuk jaga-jaga di layar HP
         th.addEventListener('dblclick', () => openNotesModal(d));
         headerRow.appendChild(th);
     }
@@ -305,7 +306,6 @@ function updateRPGStats() {
 
     if (calculatedXP < 0) calculatedXP = 0;
     db.globalXP = calculatedXP;
-    saveDB();
 
     let currentLevel = Math.floor(db.globalXP / XP_PER_LEVEL) + 1;
     let xpInCurrentLevel = db.globalXP % XP_PER_LEVEL;
@@ -432,6 +432,7 @@ window.addTransaction = function() {
         return;
     }
     
+    // PENYESUAIAN REAL-TIME LOCAL TIMEZONE HP USER
     const dateNow = new Date();
     const formattedDate = `${dateNow.getDate()} ${MONTH_NAMES[dateNow.getMonth()].substring(0,3)}`;
     
@@ -450,6 +451,12 @@ window.addTransaction = function() {
     amountInput.value = "";
     
     renderFinanceDashboard();
+
+    // OPTIMASI MOBILE: Layar HP auto-scroll smooth ke bawah menuju tabel log transaksi setelah klik input
+    const historyWrapper = document.querySelector('.finance-history-wrapper');
+    if (historyWrapper) {
+        historyWrapper.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 window.deleteTransaction = function(id) {
@@ -489,12 +496,3 @@ function renderFinanceDashboard() {
         else balanceDisplay.style.color = "var(--punk-gold)";
     }
 }
-
-function saveDB() {
-    localStorage.setItem('anarchyDashboardEngine', JSON.stringify(db));
-}
-
-// RUN ENGINE: Hanya mengikat event modal di awal, sisanya di-load pas tombol di-klik!
-window.onload = function() {
-    setupModalEvents();
-};
