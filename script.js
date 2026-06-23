@@ -57,15 +57,21 @@ function getArchiveKey() {
     return `${db.currentYear}-${activeMonthName}`;
 }
 
-// FIX LOGIKA SAVE: Gabungkan Cloud Firestore dan Cadangan LocalStorage
+// FIX TOTAL LOGIKA SAVE: Amankan jalur pipa data ke Firebase Cloud baru ke LocalStorage
 function saveDB() {
-    // 1. Kirim ke Firebase Cloud
+    console.log("⏳ Mencoba mengirim data ke Cloud Firestore...");
+    
     docRef.set(db)
-        .then(() => console.log("🔥 Cloud database berhasil disinkronkan!"))
-        .catch((error) => console.error("❌ Gagal sync cloud: ", error));
-        
-    // 2. Simpan cadangan lokal di HP/Laptop buat jaga-jaga offline
-    localStorage.setItem('anarchyDashboardEngine', JSON.stringify(db));
+        .then(() => {
+            console.log("🔥 Cloud database berhasil disinkronkan!");
+            // LocalStorage baru di-update KETIKA Firebase sudah fix menerima data
+            localStorage.setItem('anarchyDashboardEngine', JSON.stringify(db));
+        })
+        .catch((error) => {
+            console.error("❌ Gagal sync cloud: ", error);
+            // Kalau offline atau error, tetep simpan di lokal biar data gak ilang
+            localStorage.setItem('anarchyDashboardEngine', JSON.stringify(db));
+        });
 }
 
 // RUN ENGINE UTAMA (DIGABUNG JADI SATU AGAR TIDAK SALING TIMPA)
