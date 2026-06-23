@@ -290,18 +290,27 @@ body {
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 15px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    .brand, .balance-card, .main-chart-wrapper {
+    .brand, .main-chart-wrapper {
         width: 100% !important;
         max-width: 100% !important;
         text-align: left !important;
     }
 
-    /* Batasi tinggi chart di HP biar gak makan tempat */
-    .main-chart-wrapper {
-        height: 180px !important;
+    /* JINAKKAN KOTAK KUNING BIAR GAK BABLAS */
+    .balance-card {
+        width: 100% !important;
         max-width: 100% !important;
+        box-sizing: border-box !important; /* Paksa padding dihitung ke dalam */
+        padding: 12px 15px !important; /* Amankan space kanan kiri */
+        text-align: left !important; /* Biar lebih estetik rata kiri di HP */
+    }
+    
+    .bal-amount {
+        font-size: 22px !important; /* Turunin dikit ukuran font di HP biar gak makan space */
     }
 
     /* 3. Bongkar Grid Sistem (Ubah Jadi Satu Kolom Vertikal) */
